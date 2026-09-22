@@ -1,0 +1,61 @@
+import { _electron } from 'playwright';
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+
+await mkdir('artifacts', { recursive: true });
+const root = await mkdtemp(path.join(tmpdir(), 'devhaven-ui-'));
+const env = { ...process.env, DEVHAVEN_TEST_HOME: root }; delete env.ELECTRON_RUN_AS_NODE;
+const args = process.env.DEVHAVEN_TEST_NO_SANDBOX ? ['--no-sandbox', '--headless', '.'] : ['.'];
+args.unshift(`--user-data-dir=${path.join(root, 'ui')}`);
+let app;
+try {
+  app = await _electron.launch({ args, env });
+  const page = await app.firstWindow();
+  const openCatalog = async () => { await page.getByRole('button', { name: '环境', exact: true }).click(); await page.getByRole('tab', { name: '安装工具', exact: false }).click(); };
+  const errors = []; page.on('pageerror', error => errors.push(error.message));
+  await page.getByRole('heading', { name: '环境', exact: true }).waitFor();
+  const snapshot = await page.evaluate(() => window.devhaven.snapshot());
+  assert.equal(snapshot.platform, process.platform);
+  assert.equal(snapshot.root, root);
+  assert.equal(snapshot.installations.length, 0);
+  assert.equal(await page.evaluate(() => typeof window.require), 'undefined');
+  assert.ok(await page.evaluate(async () => (await document.fonts.load('14px "Noto Sans SC Variable"', '环境中文')).length) > 0);
+  await page.setViewportSize({ width: 1360, height: 850 });
+  await page.screenshot({ path: 'artifacts/desktop-real.png', fullPage: true });
+  await openCatalog();
+  assert.equal(await page.locator('.tool-card').count(), 11);
+  for (const name of ['Java Logo', 'Apache Maven Logo']) assert.ok(await page.getByRole('img', { name, exact: true }).evaluate(image => image.complete && image.naturalWidth > 0));
+  await page.getByLabel('工具分类').selectOption('语言');
+  assert.equal(await page.locator('.tool-card').count(), 4);
+  await page.getByLabel('工具分类').selectOption('全部');
+  await page.getByRole('button', { name: '管理 Java', exact: true }).click();
+  await page.getByRole('dialog').getByText('需要先准备管理引擎。', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '关闭', exact: true }).click();
+  await page.screenshot({ path: 'artifacts/catalog-desktop.png', fullPage: true });
+  await page.getByRole('button', { name: '环境', exact: true }).click();
+  assert.ok(await page.getByRole('button', { name: '导出清单', exact: true }).isDisabled());
+  await page.getByRole('tab', { name: '安装记录', exact: false }).click();
+  await page.getByText('暂无安装记录', { exact: true }).waitFor();
+  await page.getByRole('button', { name: '设置', exact: true }).click();
+  await page.getByText(root, { exact: true }).waitFor();
+  if (process.platform === 'darwin') {
+    const integration = page.getByRole('region', { name: '全局终端环境', exact: true });
+    await integration.getByRole('switch').check();
+    await integration.getByText('已开启', { exact: true }).waitFor();
+    const status = await page.evaluate(() => window.devhaven.shellStatus());
+    assert.equal(status.enabled, true);
+    assert.equal(status.configFile, path.join(root, '.zshrc'), 'Smoke test must never modify the real shell configuration');
+    await page.screenshot({ path: 'artifacts/global-shell-settings.png', fullPage: true });
+    await integration.getByRole('switch').uncheck();
+    await integration.getByText('未开启', { exact: true }).waitFor();
+    assert.equal((await page.evaluate(() => window.devhaven.shellStatus())).enabled, false);
+  }
+  await page.getByRole('button', { name: '环境', exact: true }).click();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: 'artifacts/desktop-narrow.png', fullPage: true });
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  assert.deepEqual(errors, []);
+  console.log('PASS: real desktop state, isolated IPC, Chinese fonts, official brand assets, navigation, filters and narrow layout');
+} finally { await app?.close(); await rm(root, { recursive: true, force: true }); }

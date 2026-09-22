@@ -1,0 +1,4 @@
+interface:
+  display_name: "DevHaven Memory"
+  short_description: "Register metadata and verified changes in central memory"
+  default_prompt: "Use $devhaven-metadata to register this project or record its verified changes in DevHaven memory."

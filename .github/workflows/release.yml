@@ -1,0 +1,60 @@
+name: Release beta
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Verify release tag and architecture
+        run: |
+          node -e 'const p=require("./package.json"); if(process.env.GITHUB_REF_NAME!==`v${p.version}` || process.arch!=="arm64") throw Error("Release tag or runner architecture mismatch")'
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npm run release:source
+      - name: Package macOS arm64
+        run: npx electron-builder --mac --arm64 --config.mac.identity=- --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - run: codesign --verify --deep --strict release/mac-arm64/DevHaven.app
+      - name: Checksums
+        working-directory: release
+        run: shasum -a 256 *.dmg *.zip > SHA256SUMS.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-arm64-release
+          if-no-files-found: error
+          path: |
+            release/*.dmg
+            release/*.zip
+            release/SHA256SUMS.txt
+  publish:
+    needs: macos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: macos-arm64-release
+          path: assets
+      - name: Publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" assets/* --verify-tag --prerelease --title "DevHaven $GITHUB_REF_NAME" --notes-file .github/RELEASE-NOTES.md

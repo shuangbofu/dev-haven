@@ -1,0 +1,41 @@
+.global-search-panel { display:flex; flex-direction:column; width:min(760px,calc(100vw - 40px)); max-width:none; height:min(620px,80dvh); max-height:80dvh; padding:0; gap:0; overflow:hidden; scrollbar-gutter:auto; }
+.global-search-input { display:flex; align-items:center; gap:12px; padding:17px 52px 17px 20px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.global-search-input > svg { color:var(--muted-foreground); }
+.global-search-input input { flex:1; min-width:0; background:none; outline:none; font-size:15px; }
+.global-search-controls { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px 12px; padding:0 16px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.global-search-controls nav:not(.list-pagination) { display:flex; gap:16px; }
+.global-search-controls nav:not(.list-pagination) button { padding:12px 0; border-bottom:2px solid transparent; color:var(--muted-foreground); font-size:12px; }
+.global-search-controls button[aria-current=page] { border-bottom-color:var(--primary)!important; color:var(--foreground)!important; }
+.global-search-controls .list-pagination { margin:0; min-height:38px; }
+.global-search-results { flex:1; min-height:0; overflow:auto; scrollbar-gutter:stable; padding:8px; }
+.global-search-empty { min-height:180px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; text-align:center; color:var(--muted-foreground); font-size:13px; padding:20px; }
+.global-search-empty small { font-size:11px; }
+.global-search-hit { display:flex; align-items:flex-start; gap:12px; padding:12px; border-radius:var(--radius-ui); cursor:pointer; }
+.global-search-hit[aria-selected=true] { background:var(--muted); }
+.global-search-hit > svg { margin-top:2px; color:var(--muted-foreground); }
+.global-search-hit-body { flex:1; min-width:0; }
+.global-search-hit-title { display:flex; align-items:baseline; flex-wrap:wrap; gap:5px 10px; }
+.global-search-hit strong { font-size:13px; font-weight:600; overflow-wrap:anywhere; }
+.global-search-hit-title > span { font-size:10px; color:var(--faint-foreground); }
+.global-search-hit p { font-size:12px; line-height:1.6; color:var(--muted-foreground); margin:5px 0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; scrollbar-gutter:auto; overflow-wrap:anywhere; }
+.global-search-hit small { display:block; color:var(--faint-foreground); font-size:10px; overflow:hidden; scrollbar-gutter:auto; text-overflow:ellipsis; white-space:nowrap; }
+.global-search-hit .language-list { margin-top:6px; }
+.global-search-hit mark { background:color-mix(in srgb,var(--primary) 14%,transparent); color:var(--foreground); border-radius:2px; }
+.global-search-footer { display:flex; justify-content:space-between; gap:8px; padding:10px 16px; border-top:1px solid var(--border); flex-shrink:0; font-size:11px; color:var(--muted-foreground); }
+.global-search-footer kbd,.sidebar-search kbd { background:var(--muted); border:1px solid var(--border); padding:1px 4px; border-radius:var(--radius-detail); font-size:10px; }
+.global-search-note { padding:10px; font-size:11px; color:var(--muted-foreground); }
+.global-search-preview { width:min(1100px,calc(100vw - 40px)); height:88dvh; max-height:88dvh; }
+.global-search-preview-toolbar { display:flex; align-items:center; gap:8px; flex-shrink:0; padding:8px 48px 8px 12px; border-bottom:1px solid var(--border); }
+.global-search-preview-toolbar > span { flex:1; min-width:0; overflow:hidden; scrollbar-gutter:auto; text-overflow:ellipsis; white-space:nowrap; font-size:11px; color:var(--muted-foreground); }
+.global-search-preview > .markdown-reader-host { flex:1; min-height:0; height:auto; }
+.global-search-plain { flex:1; min-height:0; padding:20px; overflow:auto; scrollbar-gutter:stable; white-space:pre-wrap; overflow-wrap:anywhere; font:12px/1.8 var(--font-mono); }
+.sidebar-search { margin:4px 0 12px; width:100%; }
+.sidebar-search kbd { margin-left:auto; }
+.sidebar-collapsed .sidebar-search kbd { display:none; }
+.global-search-hit > .document-icon-markdown { color:#3b82f6; }
+.global-search-hit > .document-icon-html { color:#f97316; }
+.global-search-preview > .html-reader { height:auto; }
+
+.global-search-preview > .dialog-close { top:8px; right:12px; }
+.global-search-preview-toolbar { min-height:49px; height:49px; padding-block:8px; padding-right:52px; }
+.global-search-hit > [data-slot=button] { align-self:center; }

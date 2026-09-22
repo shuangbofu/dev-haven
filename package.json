@@ -1,0 +1,137 @@
+{
+  "name": "devhaven",
+  "version": "0.1.0-beta.1",
+  "private": true,
+  "description": "A local workspace for projects, knowledge, environments and coding-agent memory",
+  "author": "DevHaven",
+  "license": "MIT",
+  "main": "dist-electron/main.cjs",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "dev:desktop": "node scripts/dev-desktop.mjs",
+    "build:web": "node scripts/generate-icons.mjs && next build",
+    "build:electron": "node scripts/build-electron.mjs",
+    "build": "npm run build:web && npm run build:electron && node scripts/prepare-package.mjs",
+    "start": "electron .",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts tests/*.test.tsx",
+    "test:integration": "tsx scripts/integration.ts",
+    "test:shell": "tsx scripts/shell-integration-smoke.ts",
+    "dist": "npm run build && electron-builder",
+    "dist:dir": "npm run build && electron-builder --dir",
+    "dist:mac": "npm run build && electron-builder --mac --arm64 --config.mac.identity=-",
+    "release:source": "node scripts/release-source.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/noto-sans-sc": "^5.3.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cross-spawn": "^7.0.6",
+    "dompurify": "^3.4.15",
+    "github-slugger": "^2.0.0",
+    "hast-util-to-text": "^4.0.2",
+    "highlight.js": "11.11.2",
+    "lucide-react": "^0.577.0",
+    "mdast-util-to-string": "^4.0.0",
+    "mermaid": "11.17.2",
+    "next": "^16.1.6",
+    "node-pty": "^1.1.0",
+    "parse5": "^8.0.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "semver": "^7.8.5",
+    "simple-icons": "^16.31.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.1",
+    "@types/cross-spawn": "^6.0.6",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^24.12.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/semver": "^7.8.0",
+    "electron": "^41.0.0",
+    "electron-builder": "^26.0.12",
+    "esbuild": "^0.27.3",
+    "jsdom": "^30.1.1",
+    "playwright": "^1.63.0",
+    "sharp": "^0.35.4",
+    "tailwindcss": "^4.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "build": {
+    "beforePack": "scripts/check-build-target.cjs",
+    "appId": "dev.devhaven.desktop",
+    "productName": "DevHaven",
+    "directories": {
+      "app": "build/app",
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "dist-electron/**/*",
+      "THIRD-PARTY-NOTICES.txt",
+      "LICENSE",
+      "package.json",
+      "!node_modules/**/*"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "dist-electron/vendor/node-pty/**/*"
+    ],
+    "npmRebuild": false,
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Development"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "shuangbofu",
+      "repo": "dev-haven",
+      "releaseType": "prerelease"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shuangbofu/dev-haven.git"
+  },
+  "homepage": "https://github.com/shuangbofu/dev-haven",
+  "bugs": {
+    "url": "https://github.com/shuangbofu/dev-haven/issues"
+  }
+}

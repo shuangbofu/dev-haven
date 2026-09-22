@@ -32,6 +32,31 @@
 
 DevHaven 通过初始化刮削认识已有项目和知识库，再在日常开发中通过 Skill 更新元数据、记录真实改动。随时能回答“我有哪些项目”“资料在哪里”“最近做了什么”，也让下一次 Agent 接手时有据可查。平台负责本地管理，理解内容、编写代码和归纳报告可以交给外部编码智能体。
 
+## 界面预览
+
+以下截图来自真实界面，使用虚构的项目、文档、变更记录和路径作为演示数据，不包含个人或公司资料。点击图片可查看大图。
+
+**项目：集中查看项目用途、技术栈和 Git 状态。**
+
+![项目页面（演示数据）](public/screenshots/projects.webp)
+
+| 环境：管理工具与默认版本 | 知识库：按用途组织知识集合 |
+| --- | --- |
+| ![环境页面（演示数据）](public/screenshots/environment.webp) | ![知识库首页（演示数据）](public/screenshots/knowledge.webp) |
+| **记忆：回顾项目与文档变更** | **设置：分类配置与主题外观** |
+| ![记忆页面（演示数据）](public/screenshots/memory.webp) | ![设置页面（演示数据）](public/screenshots/settings.webp) |
+
+<details>
+<summary>查看更多：文档阅读、个人报告、终端与全局搜索</summary>
+
+| 文档阅读：目录树、排版与代码高亮 | 个人报告：概览与详细内容 |
+| --- | --- |
+| ![文档阅读（演示数据）](public/screenshots/document.webp) | ![个人报告（演示数据）](public/screenshots/report.webp) |
+| **终端：在受管环境中使用命令行** | **全局搜索：查找文档正文与项目内容** |
+| ![内置终端（模拟输出）](public/screenshots/terminal.webp) | ![全局搜索（演示数据）](public/screenshots/search.webp) |
+
+</details>
+
 ## 安装与首次使用
 
 当前版本为 **0.1.0-beta.1**，是早期预发布版本。界面、元数据格式和接口仍可能调整，建议先用少量目录体验，并备份个人记忆和报告。

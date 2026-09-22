@@ -24,6 +24,6 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          node -e 'const fs=require("fs"),p=require("path").join(process.env.RUNNER_TEMP,"devhaven-tests.log"); if(fs.existsSync(p)){const s=fs.readFileSync(p,"utf8").slice(-18000).replaceAll("%","%25").replaceAll("\r","%0D").replaceAll("\n","%0A");console.log("::error title=Test failure details::"+s)}'
+          node -e 'const fs=require("fs"),p=require("path").join(process.env.RUNNER_TEMP,"devhaven-tests.log"); if(fs.existsSync(p)){const log=fs.readFileSync(p,"utf8"),failures=log.match(/not ok [\s\S]*?(?=\n# Subtest:|\n1\.\.|$)/g)||[log.slice(-3000)];for(const failure of failures){const message=failure.slice(0,3500).replaceAll("%","%25").replaceAll("\r","%0D").replaceAll("\n","%0A");console.log("::error title=Test failure details::"+message)}}'
 
       - run: npm run release:source

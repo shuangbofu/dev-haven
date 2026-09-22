@@ -17,5 +17,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npm test
+      - name: Tests
+        shell: bash
+        run: npm test 2>&1 | tee "$RUNNER_TEMP/devhaven-tests.log"
+      - name: Summarize failed tests
+        if: failure()
+        shell: bash
+        run: |
+          node -e 'const fs=require("fs"),p=require("path").join(process.env.RUNNER_TEMP,"devhaven-tests.log"); if(fs.existsSync(p)){const s=fs.readFileSync(p,"utf8").slice(-18000).replaceAll("%","%25").replaceAll("\r","%0D").replaceAll("\n","%0A");console.log("::error title=Test failure details::"+s)}'
+
       - run: npm run release:source

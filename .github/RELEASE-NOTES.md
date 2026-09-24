@@ -1,14 +1,12 @@
-DevHaven 首个早期 Beta：面向 Vibe Coding 的本地项目、知识、环境和个人记忆管理工具。
+DevHaven 0.1.0-beta.2：早期 Beta 的增量优化。
 
-- 项目元数据、Git 克隆／更新、README 阅读和 VS Code 打开。
-- 多目录知识库，Markdown／HTML 阅读，代码高亮和 Mermaid 图表。
-- 本地全文索引、可配置快捷搜索、搜索结果进入项目／知识库详情。
-- mise 环境管理、多会话终端及可选全局 Shell 集成。
-- 集中变更记录、Codex 刮削、个人日报／周报／月报和 Agent Skill／查询 MCP。
-- 主题切换、可折叠筛选与分类设置整页。
+- 项目筛选按目录、语言、标签各占一行，超出选项可展开／收起。
+- HTML 文档支持内嵌脚本、按钮、表单计算及页内跳转，并保留与应用接口、本机文件和网络的隔离。依赖 CDN、外部接口或相邻资源的页面需先打包为自包含 HTML。
+- 补充 Codex、Claude Code 和其他智能体的接入约定，说明无需原生 Skill 的客户端录入方式、回执确认和 MCP 只读边界。
+- README 增加主要界面截图，全部使用虚构演示数据。
 
-本次提供 macOS Apple Silicon（arm64）的 DMG 和 ZIP；Windows、Linux、Intel Mac 可从源码构建，尚不提供此版本安装包。
+本次仅提供 macOS Apple Silicon（arm64）的 DMG 和 ZIP，不发布 Windows、Linux 或 Intel Mac 安装包。
 
-这是早期预发布，元数据格式与接口可能继续调整。建议先用少量目录体验并备份记忆与报告。macOS 包使用 ad-hoc 签名，未经过 Apple 公证，首次打开可能需要在系统「隐私与安全性」中允许。SHA256SUMS.txt 可用于核对下载文件。
+这是早期预发布，元数据格式与接口可能继续调整。升级前建议备份个人记忆与报告。macOS 包使用 ad-hoc 签名，未经过 Apple 公证，首次打开可能需要在系统「隐私与安全性」中允许。SHA256SUMS.txt 可用于核对下载文件。
 
 搜索和记忆在本地保存；Codex 扫描／报告会将样本交给用户配置的 CLI 及模型服务。项目进程启动／停止托管尚未实现。

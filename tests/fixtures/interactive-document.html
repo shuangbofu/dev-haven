@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh"><head><style>output { color: green; }</style></head><body>
+<h1 id="title">交互文档</h1>
+<button id="counter" onclick="this.textContent=Number(this.textContent)+1">0</button>
+<form id="calculator"><input id="amount" value="2" type="number"><button>计算</button><output id="result"></output></form>
+<a href="#title" id="anchor">回到标题</a>
+<a href="https://example.invalid/escape" id="external">外部页面</a>
+<button id="navigate" onclick="location.href='https://example.invalid/script-escape'">脚本跳转</button>
+<button id="probe">隔离检查</button><output id="isolation"></output>
+<script>
+ document.querySelector('#calculator').onsubmit = event => {
+   event.preventDefault();
+   document.querySelector('#result').textContent = Number(document.querySelector('#amount').value) * 2;
+ };
+ document.querySelector('#probe').onclick = async () => {
+   const blocked = action => { try { action(); return false; } catch { return true; } };
+   const checks = {
+     parent: blocked(() => parent.document.body),
+     bridge: blocked(() => parent.devhaven),
+     storage: blocked(() => localStorage.setItem('test', '1')),
+     node: typeof require === 'undefined' && typeof process === 'undefined',
+     ownBridge: typeof window.devhaven === 'undefined',
+     top: blocked(() => top.location.href = 'https://example.invalid/top'),
+     popup: window.open('https://example.invalid/popup') === null,
+     network: await fetch('https://example.invalid/request').then(() => false, () => true),
+     file: await fetch('file:///not-a-real-file').then(() => false, () => true),
+   };
+   document.querySelector('#isolation').textContent = JSON.stringify(checks);
+ };
+</script>
+</body></html>

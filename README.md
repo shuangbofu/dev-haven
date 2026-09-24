@@ -6,7 +6,7 @@
 <p align="center">项目、环境、知识与个人记忆，让人和 Code Agent 都能找到上下文。</p>
 
 <p align="center">
-  <a href="https://github.com/shuangbofu/dev-haven/releases"><img src="https://img.shields.io/badge/version-0.1.0--beta.1-orange" alt="Version 0.1.0-beta.1" /></a>
+  <a href="https://github.com/shuangbofu/dev-haven/releases"><img src="https://img.shields.io/badge/version-0.1.0--beta.2-orange" alt="Version 0.1.0-beta.2" /></a>
   <a href="https://github.com/shuangbofu/dev-haven/actions/workflows/ci.yml"><img src="https://github.com/shuangbofu/dev-haven/actions/workflows/ci.yml/badge.svg" alt="CI checks" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://github.com/shuangbofu/dev-haven/releases"><img src="https://img.shields.io/badge/download-macOS_arm64-111827?logo=apple&logoColor=white" alt="Download macOS arm64 beta" /></a>
@@ -59,7 +59,7 @@ DevHaven 通过初始化刮削认识已有项目和知识库，再在日常开�
 
 ## 安装与首次使用
 
-当前版本为 **0.1.0-beta.1**，是早期预发布版本。界面、元数据格式和接口仍可能调整，建议先用少量目录体验，并备份个人记忆和报告。
+当前版本为 **0.1.0-beta.2**，是早期预发布版本。界面、元数据格式和接口仍可能调整，建议先用少量目录体验，并备份个人记忆和报告。
 
 首版提供 **macOS Apple Silicon（arm64）** 的 DMG 和 ZIP。Windows、Linux 与 Intel Mac 可从源码构建，尚不提供本版本安装包或桌面实机验收承诺。
 
@@ -67,7 +67,7 @@ DevHaven 通过初始化刮削认识已有项目和知识库，再在日常开�
 2. 首次打开，选择项目目录、知识库目录、记忆目录和报告目录。项目和知识库均可配置多个根目录。
 3. 需要刮削或生成报告时，先安装并登录本地 Codex CLI，在设置的 Agent 标签中选择可执行文件及模型。
 4. 开始刮削，让 Agent 根据真实文件登记项目和知识集合；在设置中配置本人 Git 提交邮箱。
-5. 将 [devhaven-metadata Skill](skills/devhaven-metadata/SKILL.md) 安装到编码智能体，在日常开发中查询资料、维护元数据并提交改动记录。
+5. 将 [devhaven-metadata Skill](skills/devhaven-metadata/SKILL.md) 接入编码智能体，并按下文「配置智能体约定」添加触发规则，让日常开发中的查询、元数据维护和改动记录有明确入口。
 
 桌面客户端自带运行时。外部 Skill 客户端需要 Node.js 22+；Git 操作需要本机 Git，VS Code 打开入口需要已安装并注册其 URL 协议。
 
@@ -89,7 +89,7 @@ macOS 安装包采用 ad-hoc 签名，**未经过 Apple 公证**。系统可能�
 
 知识库是带有名称、描述等元数据的知识集合。普通文件夹不会自动成为知识库。支持新建知识库、子集合及文档；新建位置限制在配置的根目录内。
 
-进入集合后，通过目录树阅读和编辑内容：Markdown 支持章节目录、代码高亮、Mermaid 图表和全屏阅读；HTML 使用隔离阅读器，禁用脚本、表单及外部资源。JSON、CSS、JS/TS、Java、Go、Rust、Python 等文件支持源码高亮与编辑，内容不会执行。文档可直接用 VS Code 打开。
+进入集合后，通过目录树阅读和编辑内容：Markdown 支持章节目录、代码高亮、Mermaid 图表和全屏阅读；HTML 使用内置 Chromium 隔离渲染，支持文档内嵌脚本驱动的按钮、表单、图表等交互及页内跳转。外部脚本、网络请求、跨页跳转和表单外发仍被禁用，依赖 CDN 或相邻资源文件的页面需要先打包成自包含 HTML。JSON、CSS、JS/TS、Java、Go、Rust、Python 等文件支持源码高亮与编辑，内容不会执行。文档可直接用 VS Code 打开。
 
 文档修改使用版本校验，避免覆盖外部编辑器已保存的更改，并将变更写入集中记忆。单文件阅读上限 2 MB，较大源码以纯文本回退，避免高亮阻塞。
 
@@ -120,6 +120,52 @@ macOS 安装包采用 ad-hoc 签名，**未经过 Apple 公证**。系统可能�
 ## 与编码智能体协作
 
 [Skill](skills/devhaven-metadata/SKILL.md) 说明何时查询、记录以及如何维护元数据。个人路径和知识库含义来自运行时上下文，不写死在 Skill 内。
+
+### 配置智能体约定
+
+安装 Skill 后，还需要让智能体知道**什么时候使用它**。DevHaven 不会自动修改用户的智能体规则；本仓库的 `AGENTS.md` 和 `CLAUDE.md` 只用于本项目开发，不会替其他项目完成接入。
+
+先完成 DevHaven 目录初始化，再在「设置 → Agent → Agent Skill」找到本机的规范目录和记录脚本。支持 Skill 的工具可按自身机制安装完整的 `devhaven-metadata` 目录（包含 `scripts` 和 `references`）；不支持 Skill 的工具，也可以直接读取该目录里的 `SKILL.md` 并调用记录脚本。
+
+| 智能体 | 约定放在哪里 |
+| --- | --- |
+| Codex | 跨项目使用时，加入 Codex 用户配置目录中的 `AGENTS.md`；仅当前项目使用时，加入项目的 `AGENTS.md`。配置目录由 `CODEX_HOME` 决定，未配置时使用工具默认位置。 |
+| Claude Code | 跨项目使用时，加入用户级 `CLAUDE.md`；仅当前项目使用时，加入项目的 `CLAUDE.md`。 |
+| 其他编码智能体 | 加入该工具实际加载的用户规则或项目规则。不要假设所有工具都会读取 `AGENTS.md`，按工具配置指定规则入口。 |
+
+可复制下面的触发约定，追加到已有规则中。将 `<DevHaven 规范目录>` 替换为设置中显示的本机目录，或替换为已安装 Skill 的实际位置；本机路径只保留在个人配置中，不提交到公共仓库。
+
+```markdown
+## DevHaven 使用约定
+
+以下情况主动使用 devhaven-metadata；若工具没有 Skill 加载机制，先读取
+<DevHaven 规范目录>/SKILL.md。执行方式和记录格式以该规范为准：
+
+- 查找个人项目、文档，了解知识库用途或选择存放位置时。
+- 创建、克隆、导入项目，或新建知识集合时。
+- 完成并验证代码、配置或文档改动后，需要沉淀可回溯记录时。
+- 项目用途、技术栈、Git 信息或启动约定发生变化时。
+- 涉及环境准备、技术图标、扫描或个人报告时，先查询规范中的能力边界。
+```
+
+约定只描述触发条件，不复制接口流程或个人目录清单。保存后重新开始会话，让智能体说明已加载的规则，并通过 DevHaven 查询一个已登记项目，确认它能够找到规范与客户端。Codex 的规则加载与覆盖关系见 [官方 AGENTS.md 指南](https://developers.openai.com/codex/guides/agents-md)；其他工具按其当前版本的规则机制配置。
+
+### 不使用 Skill，也能录入
+
+Skill 是操作规范，**真正写入集中记忆的是本地客户端**。任何能读取规范、执行 Node.js 命令的智能体或脚本，都可以按同一接口录入，不要求使用特定模型或原生 Skill 功能。
+
+从设置中取得记录脚本的实际路径后：
+
+```sh
+node "<记录脚本路径>" context
+node "<记录脚本路径>" record --file "<记录 JSON 路径>"
+```
+
+先用 `context` 获取真实来源 ID、根目录及已有元数据，再按 [记录格式](skills/devhaven-metadata/references/format.md) 准备 JSON；项目路径与依据文件路径均相对于对应来源根目录。提交后检查命令返回的 receipt 文件，只有 `accepted: true` 才表示已入库；应用关闭时会保留待处理队列。需要发现客户端位置时，也可执行规范目录里的 `scripts/context.mjs`。
+
+只接入当前 MCP 服务能够查询上下文与搜索，**还不能通过 MCP 写入记录**；写入仍使用 `record`。既不加载约定、也不调用客户端的外部智能体，不会自动贡献 Agent 记录。应用内操作和本人 Git 提交有各自的记录入口，但不能代替 Agent 对实际开发过程的说明。外部智能体的记录接入与应用内扫描／报告执行器是两回事；当前应用内扫描与报告使用 Codex CLI。
+
+### 日常协作
 
 典型流程：
 

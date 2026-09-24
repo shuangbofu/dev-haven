@@ -21,7 +21,6 @@
 .library-workspace > .workspace-toolbar { margin-bottom:0; }
 .projects-workspace > .workspace-toolbar { margin-bottom:12px; }
 .catalog-filters { display:flex; flex-direction:column; gap:4px; padding:0 0 10px; flex-shrink:0; min-width:0; }
-.projects-workspace > .catalog-filters { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:4px 12px; }
 .project-group-filter { display:flex; align-items:center; gap:5px; min-width:0; }
 .workspace-title-count { flex-shrink:0; padding:1px 6px; border-radius:var(--radius-ui); background:var(--muted); color:var(--muted-foreground); font-size:11px; line-height:18px; }
 .project-group-filter > button { flex-shrink:0; }

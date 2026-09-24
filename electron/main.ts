@@ -4,6 +4,7 @@ import { readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { editorURL } from './editor-url';
+import { restrictDocumentNavigation } from './document-security';
 import { z } from 'zod';
 import { EnvironmentService } from './service';
 import { clearOldTerminalScripts, TerminalManager } from './terminal';
@@ -105,6 +106,7 @@ function createWindow() {
   });
   window.webContents.on('preload-error', (_event, _preloadPath, error) => dialog.showErrorBox('桌面接口加载失败', error.message));
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+  restrictDocumentNavigation(window.webContents);
   window.webContents.on('will-navigate', (event, url) => { if (url !== (devURL ?? pathToFileURL(pagePath).href)) event.preventDefault(); });
   window.webContents.session.setPermissionRequestHandler((_contents, _permission, callback) => callback(false));
   window.webContents.session.webRequest.onHeadersReceived((details, callback) => {
